@@ -112,6 +112,7 @@ func main() {
 		case <-done:
 			// One final check for invariants.
 			x.Check(checkInvariants(c, uids, sents))
+			fmt.Printf("Swap test passed\n")
 			return
 		}
 	}
@@ -161,12 +162,15 @@ func newClient() *client.Dgraph {
 func setup(c *client.Dgraph, sentences []string) []string {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(*timeout)*time.Second)
 	defer cancel()
+	fmt.Printf("Going to drop\n")
 	x.Check(c.Alter(ctx, &protos.Operation{
 		DropAll: true,
 	}))
+	fmt.Printf("DropAll done\n")
 	x.Check(c.Alter(ctx, &protos.Operation{
 		Schema: `sentence: string @index(term) .`,
 	}))
+	fmt.Printf("Schema done\n")
 
 	rdfs := ""
 	for i, s := range sentences {
