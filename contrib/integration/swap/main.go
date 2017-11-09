@@ -160,17 +160,17 @@ func newClient() *client.Dgraph {
 }
 
 func setup(c *client.Dgraph, sentences []string) []string {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(*timeout)*time.Second)
-	defer cancel()
-	fmt.Printf("Going to drop\n")
-	x.Check(c.Alter(ctx, &protos.Operation{
+	x.Printf("Going to drop\n")
+	x.Check(c.Alter(context.Background(), &protos.Operation{
 		DropAll: true,
 	}))
-	fmt.Printf("DropAll done\n")
+	x.Printf("DropAll done\n")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(*timeout)*time.Second)
+	defer cancel()
 	x.Check(c.Alter(ctx, &protos.Operation{
 		Schema: `sentence: string @index(term) .`,
 	}))
-	fmt.Printf("Schema done\n")
+	x.Printf("Schema done\n")
 
 	rdfs := ""
 	for i, s := range sentences {
